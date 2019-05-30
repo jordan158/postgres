@@ -1,0 +1,86 @@
+
+下载地址：https://www.postgresql.org/ftp/source/
+
+安装步骤：
+
+
+一.解压源码包
+tar zxvf postgresql-10.5.tar.gz
+cd postgresql-10.5
+
+二.检查环境配置
+#创建postgreSQL的安装目录
+    mkdir /usr/local/postgresql
+#检查环境配置--prefix是指定postgreSQL安装路径
+    ./configure --prefix=/usr/local/postgresql
+
+三.解决环境配置检查过程中出现的依赖问题
+1.出现readline library not found依赖的解决.apt-get install -y libreadline-gplv2-dev
+2.出现zlib library not found依赖问题的解决.apt-get install zlib1g-dev
+
+四.再次重新检查环境
+./configure --prefix=/usr/local/postgresql
+
+五.编译安装
+  make && make install
+
+六.安装contrib目录下的一些工具，是第三方组织的一些工具代码，建议安装
+cd contrib
+make && make install
+
+七.添加用户
+ root 用户不能启动postgresql 所以创建一个普通用户来启动和管理
+    adduser postgres
+
+八. 赋予 postgres用户相关文件夹权限
+#创建postgreSQL数据存放位置
+## postgreSQL有些配置文件将数据的存放位置指向 /usr/local/postgresql/data，
+## 可以将将数据的存放位置创建在 /usr/local/postgresql下，可以省去后面一些配置的修改
+mkdir -p /var/postgresql/data
+## 日志存放
+mkdir -p /var/postgresql/logs
+# 给postgres用户赋予文件夹的所属权限和读写
+chown -R postgres:postgres /usr/local/postgresql
+chown -R postgres:postgres /var/postgresql
+
+chmod -R 775 /var/postgresql/*
+
+九.配置postgres用户环境变量
+#切换至postgres用户
+su - postgres
+#修改配置文件
+vim ~/.profile
+# 添加以下内容和修改PATH
+export PGHOME=/usr/local/postgresql
+export PGDATA=/var/postgresql/data
+export PGHOST=/tmp
+export PATH="$HOME/bin:$HOME/.local/bin:$PATH:$PGHOME/bin"
+export MANPATH=$PGHOME/share/man:$MANPATH
+export LANG=en_US.utf8
+export DATE=`date +"%Y-%m-%d %H:%M:%S"`
+export LD_LIBRARY_PATH=$PGHOME/lib:$LD_LIBRARY_PATH
+#下面只是启动服务的快捷配置，可不用配置
+#alias pg_start='pg_ctl start -D $PGDATA'
+#alias pg_stop='pg_ctl stop -D $PGDATA -m fast'
+
+十.#初始化数据库
+  initdb -D /var/postgresql/data
+  #启动服务
+  pg_ctl -D /var/postgresql/data -l /var/postgresql/logs/logfile start
+  #连接数据库
+  psql
+  #创建数据库
+  create database test;
+  #创建表
+  create table t_user (id integer, name text);
+  #插入测试数据
+  insert into t_user values (1,'joke');
+  #查询数据
+  select * from t_user ;
+  #退出psql窗口
+  \q
+
+
+
+
+
