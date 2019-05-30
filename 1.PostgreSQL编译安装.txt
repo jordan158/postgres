@@ -1,5 +1,6 @@
 
 下载地址：https://www.postgresql.org/ftp/source/
+参考：https://blog.csdn.net/lc_2014c/article/details/84189162
 
 安装步骤：
 
@@ -81,6 +82,18 @@ export LD_LIBRARY_PATH=$PGHOME/lib:$LD_LIBRARY_PATH
   \q
 
 
+十一：
+# 切换postgres用户
+su - postgres
+#重启服务
+pg_ctl -D /var/postgresql/data -l /var/postgresql/logs/logfile restart
 
+#停止服务
+pg_ctl -D /var/postgresql/data -l /var/postgresql/logs/logfile stop
+---------------------
+作者：liuccn
+来源：CSDN
+原文：https://blog.csdn.net/lc_2014c/article/details/84189162
+版权声明：本文为博主原创文章，转载请附上博文链接！
 
 
