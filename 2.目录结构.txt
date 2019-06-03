@@ -1,0 +1,28 @@
+PG_VERSION -- 数据库版本
+
+base/-- 这个目录对应pg_default表空间
+
+global/--这个目录对应pg_global表空间, 存放集群中的共享对象例pg_database
+表, (select relkind,relname from pg_class where reltablespace = (select oid from pg_tablespace where spcname=‘pg_global’)
+order by 1) , 包含控制文件等.
+
+pg_commit_ts/
+pg_dynshmem/
+pg_logical/
+
+pg_multixact/-- 共享行锁的事务状态数据
+pg_notify/-- 异步消息相关的状态数据
+pg_replslot/
+pg_serial/-- 串行隔离级别的事务状态数据
+pg_snapshots/-- 存储执行了事务snapshot导出的状态数据
+pg_stat/-- 统计信息的临时文件
+pg_stat_tmp/
+pg_subtrans/-- 子事务状态数据
+pg_tblspc/-- 表空间的软链接目录
+pg_twophase/-- 二阶事务的状态数据
+pg_wal/-- 存储WAL文件
+pg_xact/
+postgresql.auto.conf
+postmaster.opts-- 记录数据库启动时的命令行选项
+postmaster.pid-- 数据库启动的主进程信息文件(包括$PGDATA目录, 数据库启动
+时间, 监听端口ipc信息等)
