@@ -1,0 +1,71 @@
+参考文档：http://www.postgres.cn/docs/10/role-attributes.html
+
+1.创建用户和创建可登陆的角色性质一样。
+CREATE ROLE name LOGIN;
+CREATE USER name;
+（CREATE USER和CREATE ROLE等效，除了CREATE USER默认假定有LOGIN，而CREATE ROLE不这样认为）。
+
+2.
+一.创建admin角色组,角色组可以不需要登陆权限属性。
+CREATE ROLE admin NOLOGIN;
+
+二.GRANT和REVOKE命令增加和移除成员：
+GRANT group_role TO role1, ... ;
+REVOKE group_role FROM role1, ... ;
+
+三.给角色赋予继承和不继承属性。
+alter ROLE joe  INHERIT;
+alter ROLE admin NOINHERIT;
+
+查看角色的属性详情，可以查看pg_roles。
+postgres=# select oid,rolname,rolsuper,rolcreaterole,rolcreatedb,rolcanlogin,rolpassword from pg_roles;
+
+
+3.把bobs_table表的所属角色改为admin.
+
+ALTER TABLE bobs_table OWNER TO admin;
+
+一.则admin以及以下可登陆的成员，都对该表拥有所有权限。
+二.如果是非admin角色成员。
+
+分配权限：
+一.public所有表所有权限：GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA public TO web;
+
+二.public所有表查询权限：
+grant select on ALL TABLES IN SCHEMA public to admin;
+revoke select on ALL TABLES IN SCHEMA public from admin; 删除该权限
+
+
+
+1. 创建用户
+
+CREATE USER dbuser WITH PASSWORD 'password';
+
+2. 分配权限
+
+所有权限：GRANT ALL PRIVILEGES ON DATABASE exampledb to dbuser;
+
+查询权限：
+GRANT CONNECT ON DATABASE exampledb TO dbuser;
+GRANT SELECT ON ALL TABLES IN SCHEMA public TO dbuser;
+GRANT USAGE ON ALL SEQUENCES IN SCHEMA public TO dbuser;
+
+ALTER DEFAULT PRIVILEGES IN SCHEMA public
+GRANT SELECT ON TABLES TO dbuser;
+
+ALTER DEFAULT PRIVILEGES IN SCHEMA public
+GRANT USAGE ON SEQUENCES TO dbuser;
+这个是我用到的　SQL　语句
+
+
+更新表数据权限：
+GRANT CONNECT ON DATABASE exampledb TO web;
+GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA public TO web;
+GRANT USAGE ON ALL SEQUENCES IN SCHEMA public TO web;
+
+ALTER DEFAULT PRIVILEGES IN SCHEMA public
+GRANT ALL PRIVILEGES ON TABLES TO web;
+
+ALTER DEFAULT PRIVILEGES IN SCHEMA public
+GRANT USAGE ON SEQUENCES TO web;
+
